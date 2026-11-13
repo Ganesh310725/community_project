@@ -1,3 +1,4 @@
+
 /**
  * Receiver Dashboard Logic with Profile Editing
  */
@@ -237,6 +238,11 @@ function listenToMyContactRequests() {
           cardBorderColor = '#cbd5e1';
         }
 
+        // Prepare a Gmail compose URL when the donor has accepted.
+        const gmailComposeUrl = req.status === 'accepted' && req.donorEmail
+          ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(req.donorEmail)}`
+          : '';
+
         html += `
           <div class="card" style="margin-bottom: 1.25rem; border-left: 5px solid ${cardBorderColor};">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
@@ -265,7 +271,7 @@ function listenToMyContactRequests() {
                     📞 Call Donor: ${escapeHtml(req.donorPhone || 'Number Available')}
                   </a>
                   ${req.donorEmail ? `
-                    <a href="mailto:${escapeHtml(req.donorEmail)}" class="btn btn-outline btn-sm">
+                    <a href="${escapeHtml(gmailComposeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
                       ✉ Email Donor
                     </a>
                   ` : ''}
