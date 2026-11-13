@@ -1,9 +1,4 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAi0FJ5EEkuaSUKWDrthyjfXTE54F30Jqs",
   authDomain: "blood-donor-finder-432a3.firebaseapp.com",
@@ -12,6 +7,4 @@ const firebaseConfig = {
   messagingSenderId: "758488739652",
   appId: "1:758488739652:web:502ed395fb718f589c3111"
 };
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
