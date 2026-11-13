@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/community_project/',
     plugins: [
       tailwindcss(),
       {
