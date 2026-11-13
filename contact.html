@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us — Blood Donor Finder</title>
+    <meta name="description" content="Get in touch with the Blood Donor Finder administration team for inquiries, support, or partnership." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <div id="navbar-container"></div>
+
+    <main class="container" style="max-width: 960px; padding-top: 3rem; padding-bottom: 4rem;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 class="section-title">Contact Us</h1>
+        <p class="section-subtitle" style="margin-bottom: 0;">
+          Have questions, suggestions, or need assistance? Send us a message or reach out through our contact desk.
+        </p>
+      </div>
+
+      <div class="grid grid-2" style="grid-template-columns: 1.1fr 1.9fr; align-items: start;">
+        
+        <!-- Left: Contact Details -->
+        <div>
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">Support Desk</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.2rem; font-size: 0.92rem;">
+              <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="color: var(--primary); margin-top: 0.15rem;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Email Inquiries:</strong>
+                  <div style="color: var(--text-muted); margin-top: 0.2rem;">support@blooddonorfinder.org</div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="color: var(--primary); margin-top: 0.15rem;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Response Hours:</strong>
+                  <div style="color: var(--text-muted); margin-top: 0.2rem;">Monday – Saturday: 9:00 AM – 7:00 PM</div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="color: var(--primary); margin-top: 0.15rem;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Community Base:</strong>
+                  <div style="color: var(--text-muted); margin-top: 0.2rem;">Community Health & Blood Coordination Center</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="background-color: var(--danger-bg); border-color: #fca5a5;">
+            <h4 style="color: #991b1b; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">
+              Critical Emergency Note:
+            </h4>
+            <p style="color: #7f1d1d; font-size: 0.85rem; line-height: 1.5;">
+              If a patient requires immediate blood transfusion in an ICU or emergency trauma setting within 1–2 hours, please coordinate directly with the attending hospital blood bank alongside searching our voluntary donor directory.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Contact Form -->
+        <div>
+          <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Send a Message</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Fill in the form below and your inquiry will be safely recorded in our database.
+            </p>
+
+            <div id="contact-alert" class="alert" style="display: none;"></div>
+
+            <form id="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Your Name <span class="required">*</span></label>
+                  <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address <span class="required">*</span></label>
+                  <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="subject">Subject <span class="required">*</span></label>
+                <input type="text" id="subject" name="subject" class="form-control" placeholder="e.g. Question regarding donor registration" required />
+              </div>
+
+              <div class="form-group">
+                <label for="message">Your Message <span class="required">*</span></label>
+                <textarea id="message" name="message" class="form-control" rows="5" placeholder="Write your message or inquiry here..." required></textarea>
+              </div>
+
+              <button type="submit" id="contact-submit-btn" class="btn btn-primary btn-lg btn-block">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+          <div>&copy; 2026 Blood Donor Finder. All inquiries handled respectfully.</div>
+          <div><a href="index.html" style="color: var(--text-muted);">Back to Home</a></div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="js/navigation.js"></script>
+    <script type="module">
+      import { setupContactForm } from './js/contact-us.js';
+      setupContactForm();
+    </script>
+  </body>
+</html>

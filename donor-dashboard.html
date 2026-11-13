@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donor Dashboard — Blood Donor Finder</title>
+    <meta name="description" content="Manage your donor profile, update donation availability, and respond to incoming contact requests." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <div id="navbar-container"></div>
+
+    <!-- Header Section -->
+    <header class="dashboard-header">
+      <div class="dashboard-header-inner">
+        <div class="dashboard-user-info">
+          <h1>
+            Donor Dashboard
+            <span class="badge badge-primary">Donor Account</span>
+          </h1>
+          <p>
+            Welcome, <strong id="donor-header-name">Loading...</strong>! Thank you for being a voluntary donor.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.6rem; align-items: center;">
+          <button id="header-edit-profile-btn" class="btn btn-secondary btn-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Edit Profile
+          </button>
+          <button id="dashboard-logout-btn" class="btn btn-outline btn-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="dashboard-alert" class="alert" style="display: none;"></div>
+      <div id="auth-alert" class="alert" style="display: none;"></div>
+
+      <!-- Top Row: Availability Control (Section B) -->
+      <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;">
+              <h2 style="font-size: 1.25rem; font-weight: 700;">Donation Availability Status</h2>
+              <span id="donor-status-badge" class="badge badge-success">Available to Donate</span>
+            </div>
+            <p id="availability-note" style="color: var(--text-muted); font-size: 0.92rem;">
+              Your profile is currently visible in donor searches for patients in need.
+            </p>
+          </div>
+          <div>
+            <button id="toggle-availability-btn" class="btn btn-outline">
+              Switch to Temporarily Unavailable
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Grid of Profile & Contact Requests -->
+      <div class="grid grid-2" style="grid-template-columns: 1.1fr 1.9fr; align-items: start;">
+        
+        <!-- Left Column: Donor Profile (Section A & C) -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">My Donor Profile</h3>
+              <button id="open-edit-profile-btn" class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+                Edit Profile
+              </button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.92rem;">
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Full Name:</span>
+                <strong id="profile-fullname" style="color: var(--text-main);">—</strong>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Blood Group:</span>
+                <span id="profile-bloodgroup" class="badge-blood" style="font-size: 0.85rem; padding: 0.2rem 0.6rem;">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Email:</span>
+                <span id="profile-email" style="font-family: monospace;">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Phone Number:</span>
+                <span id="profile-phone" style="font-weight: 600;">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">City / Town:</span>
+                <span id="profile-city">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">District:</span>
+                <span id="profile-district">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">State:</span>
+                <span id="profile-state">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Area / Locality:</span>
+                <span id="profile-area">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">PIN Code:</span>
+                <span id="profile-pincode">—</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; padding-top: 0.25rem;">
+                <span style="color: var(--text-muted);">Last Donation Date:</span>
+                <span id="profile-lastdonation">—</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; background-color: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; font-size: 0.82rem; color: var(--text-muted);">
+              🔒 <strong>Privacy Assurance:</strong> Your phone number is kept confidential and is never visible in public searches. It is only shared when you accept a specific contact request.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Incoming Contact Requests (Section D) -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Incoming Contact Requests</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Patients and receivers requesting your blood donation.
+                </p>
+              </div>
+              <span id="donor-pending-requests-count" class="badge badge-warning">0 Pending</span>
+            </div>
+
+            <div id="donor-requests-list">
+              <div class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading contact requests...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Modal for Edit Profile (Section C) -->
+    <div id="edit-profile-modal" class="modal-overlay">
+      <div class="modal-content" style="max-width: 600px;">
+        <button id="close-edit-modal-btn" class="modal-close">&times;</button>
+        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem;">Edit Donor Profile</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Update your blood donation and contact information.</p>
+
+        <form id="edit-profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-fullName">Full Name <span class="required">*</span></label>
+              <input type="text" id="edit-fullName" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-bloodGroup">Blood Group <span class="required">*</span></label>
+              <select id="edit-bloodGroup" class="form-control" required>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-phoneNumber">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="edit-phoneNumber" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-lastDonationDate">Last Donation Date</label>
+              <input type="date" id="edit-lastDonationDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-state">State</label>
+              <input type="text" id="edit-state" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="edit-district">District</label>
+              <input type="text" id="edit-district" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-city">City <span class="required">*</span></label>
+              <input type="text" id="edit-city" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-area">Area / Locality</label>
+              <input type="text" id="edit-area" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-pinCode">PIN Code <span class="required">*</span></label>
+              <input type="text" id="edit-pinCode" class="form-control" maxlength="6" required />
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
+              <div class="checkbox-group" style="margin: 0;">
+                <input type="checkbox" id="edit-searchConsent" />
+                <label for="edit-searchConsent" style="font-size: 0.85rem;">Consent to appear in searches</label>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" id="save-profile-btn" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+          <div>&copy; 2026 Blood Donor Finder. Donor Portal.</div>
+          <div><a href="find-donors.html" style="color: var(--text-muted);">View Public Donor Directory</a></div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="js/navigation.js"></script>
+    <script type="module">
+      import { initDonorDashboard } from './js/donor-dashboard.js';
+      initDonorDashboard();
+    </script>
+  </body>
+</html>

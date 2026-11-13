@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'ganesh276c@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User document validation
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'fullName', 'email', 'role', 'createdAt']) &&
+             data.keys().hasOnly(['uid', 'fullName', 'email', 'role', 'phone', 'phoneNumber', 'state', 'district', 'city', 'pinCode', 'pincode', 'createdAt', 'updatedAt']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
+             data.email is string && data.email.size() <= 150 &&
+             data.role in ['donor', 'receiver', 'admin'];
+    }
+
+    // Donor document validation
+    function isValidDonor(data) {
+      return data.keys().hasAll(['uid', 'fullName', 'bloodGroup', 'state', 'district', 'city', 'availability', 'createdAt']) &&
+             data.keys().hasOnly(['uid', 'fullName', 'bloodGroup', 'phone', 'phoneNumber', 'state', 'district', 'city', 'area', 'pinCode', 'pincode', 'lastDonationDate', 'availability', 'consentToBeListed', 'searchConsent', 'createdAt', 'updatedAt']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
+             data.bloodGroup in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] &&
+             data.state is string && data.state.size() <= 100 &&
+             data.district is string && data.district.size() <= 100 &&
+             data.city is string && data.city.size() <= 100 &&
+             data.availability in ['Available', 'Temporarily Unavailable'];
+    }
+
+    // Contact Request validation
+    function isValidContactRequest(data) {
+      return data.keys().hasAll(['requestId', 'donorUid', 'receiverUid', 'receiverName', 'message', 'status', 'createdAt', 'updatedAt']) &&
+             data.keys().hasOnly(['requestId', 'donorUid', 'receiverUid', 'receiverName', 'receiverPhone', 'receiverEmail', 'message', 'status', 'donorPhone', 'donorEmail', 'createdAt', 'updatedAt']) &&
+             data.requestId is string && data.requestId.size() <= 128 &&
+             data.donorUid is string && data.donorUid.size() <= 128 &&
+             data.receiverUid is string && data.receiverUid.size() <= 128 &&
+             data.receiverName is string && data.receiverName.size() <= 100 &&
+             data.message is string && data.message.size() <= 1000 &&
+             data.status in ['pending', 'accepted', 'rejected'];
+    }
+
+    // Feedback validation
+    function isValidFeedback(data) {
+      return data.keys().hasAll(['feedbackId', 'name', 'email', 'subject', 'message', 'createdAt']) &&
+             data.keys().hasOnly(['feedbackId', 'name', 'email', 'subject', 'message', 'createdAt']) &&
+             data.feedbackId is string && data.feedbackId.size() <= 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 150 &&
+             data.subject is string && data.subject.size() <= 200 &&
+             data.message is string && data.message.size() <= 2000;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) &&
+                       isValidUser(request.resource.data) &&
+                       request.resource.data.uid == userId &&
+                       (request.resource.data.role in ['donor', 'receiver'] || isAdmin());
+      allow update: if (isOwner(userId) || isAdmin()) &&
+                       isValidUser(request.resource.data) &&
+                       request.resource.data.uid == resource.data.uid &&
+                       (isAdmin() || request.resource.data.role == resource.data.role);
+      allow delete: if isAdmin();
+    }
+
+    // Donors collection
+    match /donors/{donorId} {
+      allow get: if isOwner(donorId) ||
+                    isAdmin() ||
+                    ((resource.data.searchConsent == true || resource.data.consentToBeListed == true) && resource.data.availability == 'Available');
+      allow list: if true;
+      allow create: if isOwner(donorId) &&
+                       isValidDonor(request.resource.data) &&
+                       request.resource.data.uid == donorId;
+      allow update: if (isOwner(donorId) || isAdmin()) &&
+                       isValidDonor(request.resource.data) &&
+                       request.resource.data.uid == resource.data.uid;
+      allow delete: if isOwner(donorId) || isAdmin();
+    }
+
+    // Contact Requests collection
+    match /contactRequests/{requestId} {
+      allow get: if isSignedIn() && (
+                    resource.data.receiverUid == request.auth.uid ||
+                    resource.data.donorUid == request.auth.uid ||
+                    isAdmin()
+                  );
+      allow list: if isSignedIn() && (
+                    resource.data.receiverUid == request.auth.uid ||
+                    resource.data.donorUid == request.auth.uid ||
+                    isAdmin()
+                  );
+      allow create: if isSignedIn() &&
+                       request.resource.data.receiverUid == request.auth.uid &&
+                       isValidContactRequest(request.resource.data) &&
+                       request.resource.data.status == 'pending';
+      allow update: if isSignedIn() &&
+                       isValidContactRequest(request.resource.data) &&
+                       request.resource.data.receiverUid == resource.data.receiverUid &&
+                       request.resource.data.donorUid == resource.data.donorUid &&
+                       (resource.data.donorUid == request.auth.uid || isAdmin()) &&
+                       (request.resource.data.status in ['accepted', 'rejected']);
+      allow delete: if isAdmin();
+    }
+
+    // Feedback collection
+    match /feedback/{feedbackId} {
+      allow create: if isValidFeedback(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

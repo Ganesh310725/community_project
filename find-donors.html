@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Blood Donors — Blood Donor Finder</title>
+    <meta name="description" content="Search verified voluntary blood donors by blood group and locality. Request direct contact securely." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <div id="navbar-container"></div>
+
+    <main class="container">
+      <div style="margin-bottom: 2rem; text-align: center;">
+        <h1 class="section-title">Find Voluntary Blood Donors</h1>
+        <p class="section-subtitle" style="margin-bottom: 0;">
+          Filter by blood group and location to connect with available donors in your area.
+        </p>
+      </div>
+
+      <!-- Search Filter Bar -->
+      <div class="card" style="margin-bottom: 2.5rem; background-color: var(--secondary); box-shadow: var(--shadow-md);">
+        <form id="donor-search-form">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
+            
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="filter-blood-group" style="font-size: 0.85rem; font-weight: 700;">Blood Group</label>
+              <select id="filter-blood-group" class="form-control">
+                <option value="">All Blood Groups</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="filter-state" style="font-size: 0.85rem; font-weight: 700;">State</label>
+              <input type="text" id="filter-state" class="form-control" placeholder="e.g. Maharashtra" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="filter-district" style="font-size: 0.85rem; font-weight: 700;">District</label>
+              <input type="text" id="filter-district" class="form-control" placeholder="e.g. Pune" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="filter-city" style="font-size: 0.85rem; font-weight: 700;">City</label>
+              <input type="text" id="filter-city" class="form-control" placeholder="e.g. Pune" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="filter-pincode" style="font-size: 0.85rem; font-weight: 700;">PIN Code</label>
+              <input type="text" id="filter-pincode" class="form-control" placeholder="6-digit PIN" maxlength="6" />
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Search
+              </button>
+              <button type="button" id="reset-filters-btn" class="btn btn-secondary" title="Reset all search filters">
+                Reset
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 700;">Available Voluntary Donors</h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Showing only verified donors who have consented to appear in searches and are currently available.
+          </div>
+        </div>
+        <div>
+          <span id="results-count" class="badge badge-primary" style="font-size: 0.88rem; padding: 0.35rem 0.85rem;">
+            Searching...
+          </span>
+        </div>
+      </div>
+
+      <!-- Donor Cards Container -->
+      <div id="donor-results-container">
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p style="margin-top: 0.75rem;">Loading verified voluntary donors from database...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Request Contact Modal -->
+    <div id="contact-request-modal" class="modal-overlay">
+      <div class="modal-content" style="max-width: 580px;">
+        <button id="close-request-modal-btn" class="modal-close">&times;</button>
+        <div class="badge badge-primary" style="margin-bottom: 0.5rem;">Blood Requirement</div>
+        <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.35rem;">Send Contact Request</h3>
+        <p id="modal-target-donor-info" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Coordinate donation directly with this voluntary donor.
+        </p>
+
+        <form id="contact-request-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientName">Patient / Receiver Name <span class="required">*</span></label>
+              <input type="text" id="patientName" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Your Contact Phone <span class="required">*</span></label>
+              <input type="tel" id="contactPhone" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="requestMessage">Requirement Details & Hospital Location <span class="required">*</span></label>
+            <textarea id="requestMessage" class="form-control" rows="4" placeholder="Please state the hospital name, location, units needed, patient condition, and how urgently blood is needed..." required></textarea>
+            <div class="form-hint">Be specific so the donor understands how to help quickly.</div>
+          </div>
+
+          <div style="background-color: var(--primary-light); border: 1px solid var(--primary-border); padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--text-main); margin-bottom: 1.25rem;">
+            🔒 <strong>Mutual Privacy Rule:</strong> Once you submit this request, the donor receives an instant notification on their dashboard. As soon as they click "Accept", their verified telephone number will unlock on your Receiver Dashboard.
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+            <button type="button" id="cancel-request-btn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" id="submit-request-btn" class="btn btn-primary">Submit Contact Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+          <div>&copy; 2026 Blood Donor Finder. Real-Time Donor Search.</div>
+          <div><a href="donor-register.html" style="color: var(--text-muted);">Are you a donor? Register here</a></div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="js/navigation.js"></script>
+    <script type="module">
+      import { initDonorSearch } from './js/donor-search.js';
+      initDonorSearch();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "Blood Donor Finder",
+  "description": "A community blood donor finder connecting voluntary donors with people who need blood, featuring role-based dashboards, verified searches, and secure contact requests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
